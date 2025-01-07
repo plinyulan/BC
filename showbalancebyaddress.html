@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Show Ethereum Balance</title>
+    
+    <script src="https://cdn.jsdelivr.net/npm/web3/dist/web3.min.js"></script>
+     <!--Fornt-->
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+     <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&display=swap" rel="stylesheet">
+    
+    
+    <style>
+        body {
+            font-family: "Inconsolata", serif;
+            background-color: #eef2f7;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-size: 16px;
+            color: #555;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            width: 80%;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            outline: none;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"]:focus {
+            border-color: #4CAF50;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            width: 40%;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .balance, .error {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .error {
+            color: red;
+        }
+
+        .info {
+            font-size: 14px;
+            color: #888;
+            margin-top: 20px;
+        }
+    </style>
+
+    <script>
+        let web3;
+        let currentNode = 'http://localhost:8545';  
+
+       
+        function switchNode(nodeUrl) {
+            currentNode = nodeUrl;
+            web3 = new Web3(new Web3.providers.HttpProvider(currentNode));
+            alert('Switched to ' + nodeUrl);
+        }
+
+        // ฟังก์ชันแสดงยอดเงินจากที่อยู่ 
+        async function showBalance() {
+            const address = document.getElementById('address').value.trim();
+
+            if (!web3.utils.isAddress(address)) {
+                document.getElementById('balance').innerHTML = "";
+                document.getElementById('error').innerHTML = "Invalid Ethereum address!";
+                return;
+            }
+
+            try {
+                const balanceWei = await web3.eth.getBalance(address);
+                const balanceEth = web3.utils.fromWei(balanceWei, 'ether');
+                document.getElementById('balance').innerHTML = 'Balance: ' + balanceEth + ' ETH';
+                document.getElementById('error').innerHTML = "";
+            } catch (error) {
+                document.getElementById('balance').innerHTML = "";
+                document.getElementById('error').innerHTML = 'Error: ' + error.message;
+            }
+        }
+
+        
+        window.onload = () => {
+            web3 = new Web3(new Web3.providers.HttpProvider(currentNode));
+        };
+    </script>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Check Balance</h1>
+        <label></label>
+        <input type="text" id="address" placeholder="Enter  address" />
+        <button type="button" onclick="showBalance()">Show Balance</button>
+        
+        <div id="balance" class="balance :"></div>
+        <div id="error" class="error"></div>
+    
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ethereum Account List</title>
+    
+    <script src="https://cdn.jsdelivr.net/npm/web3/dist/web3.min.js"></script>
+     <!--Fornt-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&display=swap" rel="stylesheet">
+  
+    
+    <style>
+       
+        body, h1, button {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Inconsolata", serif;
+            background-color: #f4f6f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        button {
+            padding: 12px 24px;
+            font-size: 1.1em;
+            background-color: #f4851e;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+      
+
+        button:hover {
+            background-color: #e3a841;
+        }
+
+        #listOfAccounts {
+            margin-top: 20px;
+            max-width: 600px;
+            width: 100%;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            list-style-type: none;
+        }
+
+        ol {
+            padding-left: 20px;
+        }
+
+        li {
+            font-size: 1.2em;
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        li:last-child {
+            border-bottom: none;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+
+    </style>
+    <script>
+        var web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
+
+        async function listAccounts() {
+            try {
+                const accounts = await web3.eth.getAccounts();
+                if (accounts.length === 0) {
+                    document.getElementById('listOfAccounts').innerHTML = '<p class="error-message">ไม่พบบัญชีใน node นี้</p>';
+                    return;
+                }
+
+                let accountList = '';
+                accounts.forEach(account => {
+                    accountList += `<li>${account}</li>`;
+                });
+
+                document.getElementById('listOfAccounts').innerHTML = '<ol>' + accountList + '</ol>';
+            } catch (error) {
+                document.getElementById('listOfAccounts').innerHTML = `<p class="error-message">${error.message}</p>`;
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>LISTACCOUNTS</h1>
+    <button type="button" onclick="listAccounts()">Show AccountList</button>
+    <div id="listOfAccounts"></div>
+</body>
+</html>
